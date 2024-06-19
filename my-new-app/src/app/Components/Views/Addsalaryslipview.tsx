@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Form, InputNumber, Button, DatePicker, Card, Typography } from 'antd';
+import { Form, InputNumber, Button, DatePicker, Card, Typography, message } from 'antd';
 
 import { salaryslip } from '../../helper/salaryslip-model';
 import Navbar from '../pages/Navbar';
 
 const { Title } = Typography;
-
-const Addsalaryslipview = () => {
+ interface prop{
+    onCancel:()=>void
+}
+const Addsalaryslipview = ({onCancel}:prop) => {
   const [form] = Form.useForm();
   const [values, setValues] = useState({
     basicSalary: 0,
@@ -21,9 +23,32 @@ const Addsalaryslipview = () => {
     netPay: 0,
   });
 
-  const onFinish = (values: salaryslip) => {
+  const onFinish =async (values: salaryslip) => {
     console.log('Received values:', values);
-  };
+    try {
+        const response = await fetch("http://localhost:5000/addsalaryslip", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+               ...values
+            
+            })
+        });
+        if (!response.ok) {
+            const data = await response.json();
+              message.error(data.error)
+        }
+        const data = await response.json();
+        form.resetFields()
+        onCancel();
+    } catch (error) {
+       
+        message.error("Failed to add slip Please try again later.");
+    }
+};
+
 
   useEffect(() => {
     const { basicSalary, allowance, bonus, deductions } = values;

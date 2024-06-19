@@ -3,6 +3,7 @@ import { Layout, Button, Drawer, Menu, Avatar, Modal } from "antd";
 import { MenuOutlined, UserOutlined, CodeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import Addsalaryslip from "./Addsalaryslip";
+import Addsalaryslipview from "../Views/Addsalaryslipview";
 
 const { Header } = Layout;
 
@@ -63,6 +64,8 @@ const Navbar = () => {
           <Menu.Item key="AddSalarySlip" onClick={showAddModal}>Add Salary Slip</Menu.Item>
         </>
       )}
+      <Menu.Item key="home" onClick={()=>navigate("/home")}>Home</Menu.Item>
+         
     </Menu>
   );
   const showAddModal = () => {
@@ -124,18 +127,18 @@ const Navbar = () => {
         placement="right"
         closable={true}
         onClose={showDrawer}
-        visible={visible}
+        open={visible}
       >
         <LeftMenu mode="inline" />
         <RightMenu mode="inline" />
       </Drawer>
       <Modal
         title="Add Salary Slip"
-        visible={addModalVisible}
-        onCancel={handleAddModalCancel}
+        open={addModalVisible}
+        onCancel={handleAddModalCancel }
         footer={null}
       >
-        <Addsalaryslip />
+        <Addsalaryslipview onCancel={handleAddModalCancel}/>
       </Modal>
     </Layout>
   );

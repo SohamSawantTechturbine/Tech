@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, DatePicker, Select, Button, Upload } from 'antd';
+import { Form, Input, DatePicker, Select, Button, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import Card from 'antd/es/card/Card';
 
@@ -9,7 +9,7 @@ const AddEmployeeView: React.FC = () => {
   const [joindate, setJoinDate] = useState<string>();
   const [birthdate, setBirthDate] = useState<string>();
   const [fileSelected, setFileSelected] = useState<File | undefined>();
-
+  const [form] = Form.useForm(); 
   const handleDateChange = (date: any) => {
     setJoinDate(date.format());
   };
@@ -46,7 +46,12 @@ const AddEmployeeView: React.FC = () => {
     
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // Display success message
+        form.resetFields();
+        setJoinDate(undefined);
+        setBirthDate(undefined);
+        setFileSelected(undefined);
+        message.success(data.message); // Display success message
+
       } else {
         const errorMessage = await response.json();
         // console.error('Failed to add employee:', errorMessage);
@@ -54,7 +59,7 @@ const AddEmployeeView: React.FC = () => {
       }
     } catch (error) {
       console.error('Error adding employee:', error);
-      alert('Error adding employee: ' + error); // Display error message
+      message.error('Error adding employee: ' + error); // Display error message
     }
   };
 
@@ -64,7 +69,7 @@ const AddEmployeeView: React.FC = () => {
         Techalathon Software
       </h1>
       <Card className='shadow shadow-lg shadow-gray-500 border-black'>
-      <Form name="basic" initialValues={{ remember: true }} onFinish={onFinish} encType="multipart/form-data">
+      <Form name="basic" form={form}  initialValues={{ remember: true }} onFinish={onFinish} encType="multipart/form-data">
         <Form.Item
           label="Name"
           name="name"
@@ -112,7 +117,9 @@ const AddEmployeeView: React.FC = () => {
         <Form.Item label="Birth Date">
           <DatePicker onChange={handleBirthDateChange} />
         </Form.Item>
-        <Form.Item name="file" label="Profile Picture">
+        <Form.Item name="file" label="Profile Picture"
+          rules={[{ required: true, message: 'Please add photo!' }]}
+        >
           <Upload
             name="file"
             beforeUpload={() => false}

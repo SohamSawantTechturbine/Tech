@@ -6,7 +6,8 @@ export interface salaryslip{
     deductions?: number;
     grosssalary: number;
     netpay: number;
-    payslipmonth: Moment;
+    payslipmonth: 
+    string;
     professionaltax: number;
     providentfund: number;
     securitydeposits: number;

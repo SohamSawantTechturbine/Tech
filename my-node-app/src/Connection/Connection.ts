@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import { AddEmpolyeedata } from "../Model/Addemplopyee-model";
+import { salaryslipdata } from "../Model/SalarySlip-model";
 
 
 const Connection=new Sequelize({
@@ -13,4 +14,5 @@ const Connection=new Sequelize({
 console.log("connection");
 
 const AddEmpolyee=AddEmpolyeedata(Connection);
-export {Connection,AddEmpolyee}
+const payslip=salaryslipdata(Connection);
+export {Connection,AddEmpolyee,payslip}

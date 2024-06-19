@@ -6,5 +6,5 @@ export interface Employee {
     Join_Date: string;
     Birth_Date: string;
     File: string;
-    Contact:string;
+    Contact:number;
 }

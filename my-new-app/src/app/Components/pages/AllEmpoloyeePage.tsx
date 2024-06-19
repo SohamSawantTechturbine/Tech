@@ -1,12 +1,12 @@
 import { Employee } from '../../helper/Employee-model';
 import Navbar from './Navbar'
 import React, { useState, useEffect } from "react";
-
-
+import { EyeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 const AllEmployeePage = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
-
+    const navigate = useNavigate();
     const fetchEmployees = async () => {
         try {
             const response = await fetch("http://localhost:5000/fetchallemployee", {
@@ -33,7 +33,10 @@ const AllEmployeePage = () => {
     const filteredEmployees = employees.filter(employee =>
         employee.Name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
+    const handleslipview = (employeeId: any) => {
+        navigate(`/hrandadminsalaryslip/${employeeId}`);
+    };
+    
     return (
         <div>
             <Navbar />
@@ -60,7 +63,8 @@ const AllEmployeePage = () => {
                                     <th className="px-4 py-2 text-left border border-black">Join Date</th>
                                     <th className="px-4 py-2 text-left border border-black">Birth Date</th>
                                     <th className="px-4 py-2 text-left border border-black">Contact_No</th>
-                                  
+                                    <th className="px-4 py-2 text-left border border-black">View Slips</th> 
+                                
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,6 +77,9 @@ const AllEmployeePage = () => {
                                         <td className="px-4 py-2 border border-black">{employee.Join_Date}</td>
                                         <td className="px-4 py-2 border border-black">{employee.Birth_Date}</td>
                                         <td className="px-4 py-2 border border-black">{employee.Contact}</td>
+                                        <td className="px-4 py-2 border border-black">
+                                            <EyeOutlined onClick={()=>handleslipview(employee.id)}>View Slips</EyeOutlined> 
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

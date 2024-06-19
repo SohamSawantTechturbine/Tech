@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { Employee } from '../../helper/Employee-model';
+import { useMutation } from '@apollo/client';
+import { Update_mutation } from '../Grapql/Update_mutation';
 
 interface Props {
     onCancel: () => void,
@@ -10,33 +12,25 @@ interface Props {
 
 const UpdateProfile = ({ onCancel, profile,refetch }: Props) => {
     const [form] = Form.useForm();
-
+     
     // Set initial form values using the profile data
     //form.setFieldsValue(profile);
-   
+   const[updateprofile]=useMutation(Update_mutation);
     const handleSubmit = async (values: any) => {
         try {
            const{Name,Email,Birth_Date,Contact}=values
          const  userid=localStorage.getItem("userId")
-            const response = await fetch("http://localhost:5000/updateprofile", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userid,Name,Email,Birth_Date,Contact
-                
-                })
-            });
+            
+              const{data}=await updateprofile({
+                variables:{Name,Email,Birth_Date,Contact,userid}
+              })
 
-            if (response.ok) {
+           
                 message.success("Profile updated successfully");
                 
                 onCancel();
                 refetch()
-            } else {
-                throw new Error("Failed to update profile");
-            }
+                
         } catch (error) {
             console.error("Error updating profile:", error);
             message.error("Failed to update profile. Please try again later.");
