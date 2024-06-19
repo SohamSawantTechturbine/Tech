@@ -2,3 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 /* You can add global styles to this file, and also import other style files */
+/* styles.css */
+
+  /* styles.css */
+/* styles.css */
+
+body.light-background {
+    background-color: #fff; /* Light background color */
+}
+
+body.dark-background {
+    background-color: #4a4646; /* Dark background color */
+}
+/* styles.css */
+
+.dark-card {
+    background-color: #4a4646; /* Dark card background color */
+    color: #fff; /* Text color for dark cards */
+}

@@ -1,46 +1,105 @@
-import { Employee } from '../../helper/Employee-model';
-import Navbar from './Navbar'
 import React, { useState, useEffect } from "react";
 import { EyeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from './../Context/Themcontext';
+import { Employee } from '../../helper/Employee-model';
+import Navbar from './Navbar';
+import CustomTable from '../utils/Table'; 
+import { ColumnsType } from 'antd/es/table';
+
 const AllEmployeePage = () => {
-    const [employees, setEmployees] = useState<Employee[]>([]);
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const navigate = useNavigate();
-    const fetchEmployees = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/fetchallemployee", {
-                method: "POST",
-            });
-            if (!response.ok) {
-                throw new Error("Failed to fetch employees");
-            }
-            const data = await response.json();
-            setEmployees(data);
-        } catch (error) {
-            console.error("Error fetching employees:", error);
-        }
-    };
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/fetchallemployee", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch employees");
+      }
+      const data = await response.json();
+      setEmployees(data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-    };
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
-    const filteredEmployees = employees.filter(employee =>
-        employee.Name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const handleslipview = (employeeId: any) => {
-        navigate(`/hrandadminsalaryslip/${employeeId}`);
-    };
-    
-    return (
-        <div>
-            <Navbar />
-            <div className="container mx-auto px-4 bg-gray-300">
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredEmployees = employees.filter(employee =>
+    employee.Name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleslipview = (employeeId: any) => {
+    navigate(`/hrandadminsalaryslip/${employeeId}`);
+  };
+
+  const handleslipviewsalary = (employeeId: any) => {
+    navigate(`/salarypage/${employeeId}`);
+  };
+
+  const columns: ColumnsType<Employee> = [
+    {
+      title: 'Name',
+      dataIndex: 'Name',
+      key: 'Name',
+    },
+    {
+      title: 'Department',
+      dataIndex: 'Department',
+      key: 'Department',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'Email',
+      key: 'Email',
+    },
+    {
+      title: 'Join Date',
+      dataIndex: 'Join_Date',
+      key: 'Join_Date',
+    },
+    {
+      title: 'Birth Date',
+      dataIndex: 'Birth_Date',
+      key: 'Birth_Date',
+    },
+    {
+      title: 'Contact',
+      dataIndex: 'Contact',
+      key: 'Contact',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <EyeOutlined onClick={() => handleslipview(record.id)} />
+      ),
+    },
+    {
+      title: 'Salary',
+      key: 'salary',
+      render: (text, record) => (
+        <EyeOutlined onClick={() => handleslipviewsalary(record.id)} />
+      ),
+    },
+  ];
+
+  return (
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
+      <Navbar />
+      <div className="p-4">
+      <div className={`container mx-auto px-4 bg-gray-300 ${theme === 'dark' ? 'dark-card' : ''}`}>
                 <div className="mt-8">
                     <h1 className="text-2xl font-bold mb-4">All Employees</h1>
                     <div className="flex justify-end mb-4">
@@ -52,43 +111,18 @@ const AllEmployeePage = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="table-auto w-full border-collapse border border-black">
-                            <thead className="bg-orange-300 ">
-                                <tr>
-                                    <th className='px-4 py-2 text-left border border-black'> Employee_ID</th>
-                                    <th className="px-4 py-2 text-left border border-black">Profile Image</th>
-                                    <th className="px-4 py-2 text-left border border-black">Name</th>
-                                    <th className="px-4 py-2 text-left border border-black">Email</th>
-                                    <th className="px-4 py-2 text-left border border-black">Join Date</th>
-                                    <th className="px-4 py-2 text-left border border-black">Birth Date</th>
-                                    <th className="px-4 py-2 text-left border border-black">Contact_No</th>
-                                    <th className="px-4 py-2 text-left border border-black">View Slips</th> 
-                                
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredEmployees.map((employee, index) => (
-                                    <tr key={index} className="bg-white border border border-black">
-                                        <td className='px-4 py-2 border border-black'>{employee.id}</td>
-                                        <td className="px-4 py-2 border border-black"><img src={`http://localhost:5000${employee.File}`} alt="avatar" className="w-16 h-16 object-cover" /></td>
-                                        <td className="px-4 py-2 border border-black">{employee.Name}</td>
-                                        <td className="px-4 py-2 border border-black">{employee.Email}</td>
-                                        <td className="px-4 py-2 border border-black">{employee.Join_Date}</td>
-                                        <td className="px-4 py-2 border border-black">{employee.Birth_Date}</td>
-                                        <td className="px-4 py-2 border border-black">{employee.Contact}</td>
-                                        <td className="px-4 py-2 border border-black">
-                                            <EyeOutlined onClick={()=>handleslipview(employee.id)}>View Slips</EyeOutlined> 
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    );
+        <CustomTable<Employee>
+          columns={columns}
+          dataSource={filteredEmployees}
+          loading={false}
+          rowKey="id"
+          className="border-black"
+        />
+      </div>
+    </div>
+    </div>
+  );
 };
 
 export default AllEmployeePage;

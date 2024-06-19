@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
-import { Card, Button, Avatar } from 'antd';
-
-import { PlusOutlined } from '@ant-design/icons';
+import { Card, Avatar, Button } from 'antd';
+import { PlusOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from './../Context/Themcontext'; // Import useTheme hook
+import { ShareSocial } from 'react-share-social';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { useModal } from '../utils/modalcom';
+import ModalComponent from '../utils/Modal';
+import AddSalarypage from './AddSalarypage';
 
 const HomePage = () => {
   const [userDepartment, setUserDepartment] = useState("");
-const navigate=useNavigate();
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const { theme } = useTheme(); // Use the useTheme hook to access theme
+  const navigate = useNavigate();
+  const {visible,openModal,closeModal}=useModal();
+  const shareUrl = window.location.href; // Current page URL
+
   const fetchUserDepartment = async () => {
     const userId = localStorage.getItem("userId");
     
@@ -34,18 +44,25 @@ const navigate=useNavigate();
     } catch (error) {
       console.error("Error fetching user department:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchUserDepartment();
   }, []);
 
+  const handleShareClick = () => {
+    setShowShareOptions(!showShareOptions);
+  };
+  const handleAddSalaryClick = () => {
+    openModal(); // Open the modal when "Add Salary" is clicked
+  };
   return (
-    <div>
+    <div className={theme === 'dark' ? 'dark-background' : ''}>
       <Navbar />
       <div className="flex justify-center mt-28">
         {userDepartment === "Admin" || userDepartment === "HR" ? (
-          <Card className="w-1/2 mx-4 border-black">
+          <div>
+          <Card className={`w-1/2 mx-4 border-black ${theme === 'dark' ? 'dark-card' : ''}`}>
             <h2 className='text-teal-600 flex justify-center'>Add Employee</h2>
             <div className="flex justify-center mt-4">
               <Avatar className='h-11 w-11 border-gray-500 cursor-pointer' onClick={() => navigate("/Addemployee")}>
@@ -53,8 +70,17 @@ const navigate=useNavigate();
               </Avatar>
             </div>
           </Card>
+          <Card className={`w-1/2 mx-4 border-black ${theme === 'dark' ? 'dark-card' : ''}`}>
+          <h2 className='text-teal-600 flex justify-center'>Add SalaryPage</h2>
+          <div className="flex justify-center mt-4">
+            <Avatar className='h-11 w-11 border-gray-500 cursor-pointer' onClick={handleAddSalaryClick}>
+              <PlusOutlined />
+            </Avatar>
+          </div>
+        </Card>
+          </div>
         ) : null}
-        <Card className="w-1/2 mx-4 border-black">
+        <Card className={`w-1/2 mx-4 border-black ${theme === 'dark' ? 'dark-card' : ''}`}>
           <h2 className='text-teal-600 flex justify-center'>View SalarySlips</h2>
           <div className="flex justify-center mt-4">
             <Avatar className='h-11 w-11 border-gray-500 cursor-pointer' onClick={() => navigate("/viewsalaryslip")}>
@@ -62,10 +88,37 @@ const navigate=useNavigate();
             </Avatar>
           </div>
         </Card>
+      
       </div>
+      <div className="flex justify-center mt-4">
+        <Button type="primary" icon={<ShareAltOutlined />} onClick={handleShareClick}>
+          Share
+        </Button>
+      </div>
+      {showShareOptions && (
+        <div className="flex justify-center mt-4">
+          <ShareSocial
+            url={shareUrl}
+            socialTypes={['facebook', 'twitter', 'whatsapp', 'telegram']}
+         
+          />
+          <CopyToClipboard text={shareUrl}>
+            <Button type="primary" className="ml-4">Copy Link</Button>
+          </CopyToClipboard>
+        </div>
+      )}
+       <ModalComponent
+      open={visible}
+      onCancel={closeModal}
+      title=" "
+     
+      
+      
+      >
+        <AddSalarypage/>
+      </ModalComponent>
     </div>
   );
-}
-
+};
 
 export default HomePage;

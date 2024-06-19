@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
+import bodyParser from 'body-parser';
+
 import { Connection } from './Connection/Connection';
 import { ApolloServer } from '@apollo/server'; // Import correct express integration
 import { expressMiddleware } from '@apollo/server/express4';
@@ -17,7 +19,9 @@ const startServer = async () => {
   app.use(cors());
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
-
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  
   const uploadDirectory = path.join(__dirname, 'uploads');
   if (!fs.existsSync(uploadDirectory)) {
     fs.mkdirSync(uploadDirectory);

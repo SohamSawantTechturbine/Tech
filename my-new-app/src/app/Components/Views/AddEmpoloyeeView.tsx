@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Input, DatePicker, Select, Button, Upload, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined ,UserOutlined,MailOutlined,PhoneOutlined} from '@ant-design/icons';
 import Card from 'antd/es/card/Card';
 
 const { Option } = Select;
@@ -75,14 +75,14 @@ const AddEmployeeView: React.FC = () => {
           name="name"
           rules={[{ required: true, message: 'Please input your name!' }]}
         >
-          <Input />
+          <Input  suffix={<UserOutlined/>}/>
         </Form.Item>
         <Form.Item
           label="contact"
           name="contact"
           rules={[{ required: true, message: 'Please input your name!' }]}
         >
-          <Input />
+          <Input suffix={<PhoneOutlined />} />
         </Form.Item>
         <Form.Item
           label="Temporary Password"
@@ -98,7 +98,7 @@ const AddEmployeeView: React.FC = () => {
             { required: true, type: 'email', message: 'Please input a valid email!' },
           ]}
         >
-          <Input />
+          <Input  suffix={<MailOutlined />} />
         </Form.Item>
         <Form.Item
           label="Department"

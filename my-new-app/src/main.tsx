@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-
+import './styles.css'
 import App from './app/app';
 
 const client = new ApolloClient({
@@ -14,7 +14,9 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
+
   <ApolloProvider client={client}>
     <App />
    </ApolloProvider>
+
 );
