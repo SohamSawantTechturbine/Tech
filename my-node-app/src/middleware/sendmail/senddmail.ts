@@ -6,14 +6,14 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: 'ssawant@techturbine.com',
-    pass: '8657299518@s'
+    user: 'email',
+    pass: '*********'
   }
 });
 
 export const sendEmail = (to: string, subject: string, text: string, html: string, pdfFilePath: string) => {
   const mailOptions = {
-    from: 'ssawant@techturbine.com',
+    from: 'email',
     to,
     subject,
     text,
